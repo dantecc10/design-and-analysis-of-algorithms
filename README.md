@@ -129,3 +129,78 @@ El tiempo de ejecución de una secuencia consecutiva de instrucciones se calcula
 El tiempo de ejecución de la sentencia
 
 *Case $C$ of $v_1 : S_1 | v_2 : S_2 | \cdots | v_n : S_n$* es $T = T(C) + max[T(S_1), T_2), \cdots, T(S_n)], T(C)$ incluye el tiempo de comparación con $v_1, v_2, \cdots, v_n$.
+
+El tiempo de ejecución de la sentencia *If C then $S_1$ else $S_2$* es $T = T(C) + max[T(S_1), T(S_2)]$.
+
+El tiempo de ejecución de un bucle de sentencias *While C do S* es $T = t(c) + ($ no iteraciones $) * (T(S) + T(C)$. Tanto $T(S)$ como $T(C)$ pueden variar en cada iteración.
+
+Para calcular el tiempo de ejecución del resto de sentencias iterativas (*For, Repeat, Loop*) basta expresarlas como un bucle *While*.
+
+El tiempo de ejecución de una llamada a un procedimiento o función $F(P_1, P_2, \cdots, P_n)$ es 1 (por llamada) más el tiempo de evaluación de los parámetros $P_1, P_2, \cdots, P_n$ más el tiempo que tarde en ejecutarse $F$.
+
+$T = 1 + T(P_1) + T(P_2) + \cdots + T(P_n) + T(F)$.
+
+El tiempo de ejecución de las llamadas a procedimientos recursivos da lugar a ecuaciones de recurrencia.
+
+También es importante hacer notar que el comportamiento de un algoritmo puede cambiar notablemente para diferentes entradas (por ejemplo, lo ordenados que se encuentren ya los datos a ordenar).
+
+Para muchos programas el tiempo de ejecución es una función de la entrada específica, y no sólo del tamaño de esta.
+
+Suelen estudiarse casos para un mismo algoritmo: *caso peor*, *caso mejor* y *caso medio*.
+
+El *caso mejor* corresponde a la traza (secuencia de sentencias) del algoritmo que realiza menos instrucciones.
+
+El *caso peor* corresponde a la traza del algorutmo que realiza más instrucciones.
+
+El *caso medio* corresponde a la traza del algoritmo que realiza un número de instrucciones igual a la esperanza matemática de la variable aleatorioa definida por todas las posibles trazas del algoritmo para un tamaño de la entrada dado, con las proababilidades de que estas ocurran para esa entrada.
+
+## Eficiencia y complejidad
+
+Es importante observar que no es necesario conocer el propósito del algoritmo para analizar su tiempo de ejecución y determinar sus casos mejor, peor y medio, sino que basta con estudiar su código.
+
+Suele ser un error muy frecuente el determinar tales casos basándose sólo en la funcionalidad para la que el algoritmo fue concebido, olvidando que es el código implementado el que los determina.
+
+- $T(n) = 1 + 1 + [1 + (\sum_{i = 1}^{n} (1 + 2+ 2))] + 1$
+- $T(n) = 4 + (\sum_{i=1}^{n}5)$
+- $T(n) = 5n + 4$
+
+- $T(n) = 1 +1 +1 + [1 + \sum_{k=1}^{n}(1 + 2 + 2 +2)] + 1$
+- $T(n) = 5 + \sum_{k=1}^{n} 7$
+- $T(n) = 5 + 7n$
+- $T(n) = 7n + 5$
+
+## Ejercicio
+
+```
+PROCEDURE Misterio(n)
+	var i, j, k, s;
+	BEGIN
+		s := 0;
+		FOR i := 1 TO n - 1 DO
+			FOR j := i + 1 TO n DO
+				FOR k := 1 TO j DO	
+					s := s + 2;
+	END Misterio
+```
+
+
+```
+PROCEDURE Misterio(n)
+        var i, j, k, s;							
+        BEGIN								
+                s := 0;							// 1
+		i := 1;							// 1
+                WHILE i < n DO						// 1
+                        j := i + 1;					// 2
+				WHILE j <= n DO				// 1
+                                	k := 1				// 1
+						WHILE K <= J DO      	// 1
+                                        		s := s + 2;	// 2
+							k := k + 1;	// 2
+						j := j + 1;		// 2
+					i := i + 1;			// 2
+        END Misterio
+```
+La complejidad sería:
+
+$T(n) = 1 + 1 + [1 + \sum_{i = 1}^{n - 1}(1 + 2 + (1 + \sum_{j = i + 1}^{n} 1 + 1 + (1 + \sum_{k = 1}^{j} 1 + 2 + 2) + 2) + 2)]$
