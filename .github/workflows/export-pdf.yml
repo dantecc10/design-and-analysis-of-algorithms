@@ -1,0 +1,91 @@
+name: Export Markdown to PDF
+
+on:
+  push:
+    paths:
+      - '**.md'
+      - '.github/workflows/export-pdf.yml'
+  pull_request:
+    paths:
+      - '**.md'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  export-pdf:
+    name: Convert Markdown to PDF
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Convert Markdown files to PDF with Pandoc
+        run: |
+          docker run --rm -v "${{ github.workspace }}:/data" -w /data pandoc/extra:latest sh -c '
+            mkdir -p output_pdfs
+
+            # Buscar todos los archivos .md (excluyendo carpetas .git, .github y output_pdfs)
+            find . -type f -name "*.md" ! -path "./.git/*" ! -path "./.github/*" ! -path "./output_pdfs/*" | sort | while IFS= read -r file; do
+              clean_file="${file#./}"
+              dir_name=$(dirname "$clean_file")
+              base_name=$(basename "$clean_file" .md)
+
+              if [ "$dir_name" = "." ]; then
+                out_dir="output_pdfs"
+              else
+                out_dir="output_pdfs/$dir_name"
+              fi
+              mkdir -p "$out_dir"
+              out_file="$out_dir/$base_name.pdf"
+
+              echo "Compilando: $clean_file -> $out_file"
+
+              pandoc "$clean_file" -o "$out_file" \
+                --pdf-engine=xelatex \
+                -V geometry:margin=2.5cm \
+                -V papersize=a4 \
+                -V lang=es-ES \
+                -V colorlinks=true \
+                -V linkcolor=blue \
+                -V urlcolor=blue \
+                --highlight-style=tango || {
+                  echo "Aviso: Error con XeLaTeX en $clean_file, intentando compilación estándar..."
+                  pandoc "$clean_file" -o "$out_file" -V geometry:margin=2.5cm || {
+                    echo "Error al compilar $clean_file"
+                  }
+                }
+            done
+          '
+
+      - name: Generate Summary Table
+        run: |
+          echo "## 📄 Exportación a PDF Completada" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Archivo Markdown | Archivo PDF | Tamaño |" >> $GITHUB_STEP_SUMMARY
+          echo "| :--- | :--- | :--- |" >> $GITHUB_STEP_SUMMARY
+          find output_pdfs -type f -name "*.pdf" | sort | while IFS= read -r pdf; do
+            rel_pdf="${pdf#output_pdfs/}"
+            orig_md="${rel_pdf%.pdf}.md"
+            size=$(du -h "$pdf" | cut -f1)
+            echo "| \`$orig_md\` | \`$rel_pdf\` | $size |" >> $GITHUB_STEP_SUMMARY
+          done
+
+      - name: Upload PDF Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: markdown-pdfs
+          path: output_pdfs/
+          retention-days: 90
+
+      - name: Publish/Update GitHub Release
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+        uses: softprops/action-gh-release@v2
+        continue-on-error: true
+        with:
+          tag_name: latest-pdf
+          name: "Última versión en PDF"
+          body: "PDFs generados automáticamente con la última versión de los archivos Markdown del repositorio."
+          files: output_pdfs/**/*.pdf
