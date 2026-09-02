@@ -24,7 +24,7 @@ jobs:
 
       - name: Convert Markdown files to PDF with Pandoc
         run: |
-          docker run --rm -v "${{ github.workspace }}:/data" -w /data pandoc/extra:latest sh -c '
+          docker run --rm --entrypoint sh -v "${{ github.workspace }}:/data" -w /data pandoc/extra:latest -c '
             mkdir -p output_pdfs
 
             # Buscar todos los archivos .md (excluyendo carpetas .git, .github y output_pdfs)
