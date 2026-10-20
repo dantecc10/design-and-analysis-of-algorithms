@@ -51,7 +51,6 @@ Teams es una herramienta de apoyo:
 5. Conclusiones
 6. Referencias
 
-
 ## Introducción
 
 Una computadora es una máquina capaz de procesar información digital a gran velocidad.
@@ -115,7 +114,6 @@ función Sum(n)
 	para i \gets 1 hasta n hacer	4 \\
 		sum \gets sum + i	2 \\
 	devolver sum			1 \\
-
 $$
 
 Calcula la suma de los enteros de 1 a n.
@@ -170,7 +168,6 @@ Suele ser un error muy frecuente el determinar tales casos basándose sólo en l
 - $T(n) = 7n + 5$
 
 ## Ejercicio
-
 ```
 PROCEDURE Misterio(n)
 	var i, j, k, s;
@@ -183,7 +180,6 @@ PROCEDURE Misterio(n)
 	END Misterio
 ```
 
-
 ```
 PROCEDURE Misterio(n)
         var i, j, k, s;
@@ -193,13 +189,13 @@ PROCEDURE Misterio(n)
                 WHILE i < n DO						// 1
                         j := i + 1;					// 2
 				WHILE j <= n DO				// 1
-                                	k := 1				// 1
+                                 	k := 1				// 1
 						WHILE K <= J DO      	// 1
-                                        		s := s + 2;	// 2
+                                         		s := s + 2;	// 2
 							k := k + 1;	// 2
 						j := j + 1;		// 2
-					i := i + 1;			// 2
-        END Misterio
+						i := i + 1;			// 2
+                END Misterio
 ```
 La complejidad sería:
 
@@ -240,42 +236,111 @@ Esto demuestra que un enfoque puramente recursivo sin memorización (memoization
 - $a_n = 2a_{n-1} - a_{n-2}$, $n \geq 2$, $a_0 = 4$, $a_1 = 1$
 - $a_n = 6a_{n-1} - 11a_{n-2} + 6a_{n-3}$, $n \geq 3$, $a_0 = 2$, $a_1 = 5$, $a_2 = 15$
 
-### Soluciones Desarrolladas
+### Soluciones Desarrolladas (Detalladas)
+*(Para ver los desarrollos matemáticos completos, consulta el archivo `derivaciones_recurrencias.md`)*
 
 #### Ejercicio 1: $a_n = 7a_{n-1} - 10a_{n-2}$
-1.  **Ecuación Característica:** $r^2 - 7r + 10 = 0$
-2.  **Raíces:** $(r-2)(r-5) = 0 \implies r_1 = 2, r_2 = 5$.
-3.  **Solución General:** $a_n = A(2^n) + B(5^n)$
-4.  **Condiciones Iniciales:**
-    - $a_0 = A + B = 2$
-    - $a_1 = 2A + 5B = 1$
-    - Resolviendo el sistema: $A = 3, B = -1$.
-5.  **Resultado:** $a_n = 3(2^n) - 5^n$
-6.  **Orden de Complejidad:** $O(5^n)$ (Exponencial)
+*Condiciones iniciales: $a_0 = 2, a_1 = 1$*
+
+**1. Obtención de la ecuación característica:**
+Sustituimos $a_n = r^n$ en la recurrencia original:
+$$r^n = 7r^{n-1} - 10r^{n-2}$$
+Dividimos por $r^{n-2}$ para simplificar:
+$$r^2 = 7r - 10 \implies \mathbf{r^2 - 7r + 10 = 0}$$
+
+**2. Resolución del polinomio:**
+Buscamos dos números que multiplicados den $10$ y sumados den $-7$. Estos son $-2$ y $-5$.
+Factorizamos:
+$$(r - 2)(r - 5) = 0$$
+Las raíces son: **$r_1 = 2$** y **$r_2 = 5$**.
+
+**3. Solución General:**
+Como las raíces son reales y distintas, la solución es una combinación lineal de ambas:
+$$a_n = A(2^n) + B(5^n)$$
+
+**4. Determinación de constantes:**
+Usamos las condiciones iniciales para crear un sistema de ecuaciones:
+*   Para $n=0$: $a_0 = A(2^0) + B(5^0) = A + B = 2$
+*   Para $n=1$: $a_1 = A(2^1) + B(5^1) = 2A + 5B = 1$
+
+Resolvemos el sistema:
+De (1), $A = 2 - B$. Sustituimos en (2):
+$$2(2 - B) + 5B = 1$$
+$$4 - 2B + 5B = 1$$
+$$3B = -3 \implies \mathbf{B = -1}$$
+Sustituyendo $B$: $A = 2 - (-1) \implies \mathbf{A = 3}$
+
+**Resultado:** $a_n = 3(2^n) - 5^n$
+**Complejidad:** $O(5^n)$
+
+---
 
 #### Ejercicio 2: $a_n = 2a_{n-1} - a_{n-2}$
-1.  **Ecuación Característica:** $r^2 - 2r + 1 = 0 \implies (r-1)^2 = 0$
-2.  **Raíces:** Raíz repetida $r = 1$ con multiplicidad 2.
-3.  **Solución General:** $a_n = (A + Bn)(1^n) = A + Bn$
-4.  **Condiciones Iniciales:**
-    - $a_0 = A = 4$
-    - $a_1 = A + B = 1 \implies 4 + B = 1 \implies B = -3$
-5.  **Resultado:** $a_n = 4 - 3n$
-6.  **Orden de Complejidad:** $O(n)$ (Lineal)
+*Condiciones iniciales: $a_0 = 4, a_1 = 1$*
+
+**1. Obtención de la ecuación característica:**
+Sustituimos $a_n = r^n$ en la recurrencia original:
+$$r^n = 2r^{n-1} - r^{n-2}$$
+Dividimos por $r^{n-2}$ para simplificar:
+$$r^2 = 2r - 1 \implies \mathbf{r^2 - 2r + 1 = 0}$$
+
+**2. Resolución del polinomio:**
+$$(r - 1)^2 = 0$$
+Obtenemos una **raíz repetida**: $r = 1$ con multiplicidad 2.
+
+**3. Solución General:**
+Cuando una raíz $r$ se repite, la base de la solución se multiplica por $n$ para mantener la independencia lineal:
+$$a_n = A(r^n) + Bn(r^n)$$
+Como $r=1$, la solución se simplifica a:
+$$a_n = A(1^n) + Bn(1^n) = \mathbf{A + Bn}$$
+
+**4. Determinación de constantes:**
+*   Para $n=0$: $a_0 = A + B(0) = 4 \implies \mathbf{A = 4}$
+*   Para $n=1$: $a_1 = A + B(1) = 1$
+    Sustituyendo $A$: $4 + B = 1 \implies \mathbf{B = -3}$
+
+**Resultado:** $a_n = 4 - 3n$
+**Complejidad:** $O(n)$
+
+---
 
 #### Ejercicio 3: $a_n = 6a_{n-1} - 11a_{n-2} + 6a_{n-3}$
-1.  **Ecuación Característica:** $r^3 - 6r^2 + 11r - 6 = 0$
-2.  **Raíces:** Probando valores enteros, encontramos que $r=1$ es raíz ($1-6+11-6=0$). Dividiendo el polinomio nos da $(r-1)(r^2-5r+6) = (r-1)(r-2)(r-3) = 0$. Las raíces son $r_1=1, r_2=2, r_3=3$.
-3.  **Solución General:** $a_n = A(1^n) + B(2^n) + C(3^n) = A + B(2^n) + C(3^n)$
-4.  **Condiciones Iniciales:**
-    - $a_0 = A + B + C = 2$
-    - $a_1 = A + 2B + 3C = 5$
-    - $a_2 = A + 4B + 9C = 15$
-    - Resolviendo el sistema:
-        - $(a_1 - a_0): B + 2C = 3$
-        - $(a_2 - a_1): 2B + 6C = 10 \implies B + 3C = 5$
-        - Restando ambas: $C = 2$.
-        - Sustituyendo: $B = -1$.
-        - Sustituyendo en $a_0$: $A - 1 + 2 = 2 \implies A = 1$.
-5.  **Resultado:** $a_n = 1 - 2^n + 2(3^n)$
-6.  **Orden de Complejidad:** $O(3^n)$ (Exponencial)
+*Condiciones iniciales: $a_0 = 2, a_1 = 5, a_2 = 15$*
+
+**1. Obtención de la ecuación característica:**
+Sustituimos $a_n = r^n$ en la recurrencia original:
+$$r^n = 6r^{n-1} - 11r^{n-2} + 6r^{n-3}$$
+Dividimos por $r^{n-3}$ para simplificar:
+$$r^3 = 6r^2 - 11r + 6 \implies \mathbf{r^3 - 6r^2 + 11r - 6 = 0}$$
+
+**2. Resolución del polinomio:**
+Probamos divisores de 6 ($\pm 1, \pm 2, \pm 3, \pm 6$).
+Si $r=1$: $1^3 - 6(1)^2 + 11(1) - 6 = 1 - 6 + 11 - 6 = 0$. (Es raíz).
+Dividimos el polinomio $(r^3 - 6r^2 + 11r - 6)$ entre $(r - 1)$ usando regla de Ruffini:
+$$1 \quad | \quad 1 \quad -6 \quad 11 \quad -6$$
+$$\quad \quad \quad \quad \quad 1 \quad -5 \quad \phantom{-}6$$
+$$\quad \quad \quad \quad \quad \quad \quad \quad \quad 0$$
+Nos queda $r^2 - 5r + 6 = 0$, que factoriza como $(r-2)(r-3) = 0$.
+Las raíces son: **$r_1=1, r_2=2, r_3=3$**.
+
+**3. Solución General:**
+$$a_n = A(1^n) + B(2^n) + C(3^n) \implies a_n = A + B(2^n) + C(3^n)$$
+
+**4. Determinación de constantes (Sistema 3x3):**
+1. $a_0 = A + B + C = 2$
+2. $a_1 = A + 2B + 3C = 5$
+3. $a_2 = A + 4B + 9C = 15$
+
+Resolvemos por eliminación:
+*   Restamos (2)-(1): $B + 2C = 3$
+*   Restamos (3)-(2): $2B + 6C = 10 \implies B + 3C = 5$
+
+Sistema resultante:
+- $B + 2C = 3$
+- $B + 3C = 5$
+Restamos las ecuaciones: $C = 2$.
+Sustituyendo: $B + 2(2) = 3 \implies B = -1$.
+Sustituyendo en (1): $A + (-1) + 2 = 2 \implies A = 1$.
+
+**Resultado:** $a_n = 1 - 2^n + 2(3^n)$
+**Complejidad:** $O(3^n)$
