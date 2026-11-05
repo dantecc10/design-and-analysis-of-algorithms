@@ -344,3 +344,61 @@ Sustituyendo en (1): $A + (-1) + 2 = 2 \implies A = 1$.
 
 **Resultado:** $a_n = 1 - 2^n + 2(3^n)$
 **Complejidad:** $O(3^n)$
+
+
+## Backtracking (Vuelta atrás)
+
+El diseño _Vuelta Atrás_ proporciona una manera sistemática de generar todas las posibles soluciones siempre que dichas soluciones sean susceptibles de resolverse en etapas.
+
+En su forma básica la _Vuelta Atrás_ se asemeja a un recorrido en profundidad dentro de un árbol cuya existencia sólo es implícita, y que denominaremos **_árbol de expansión_**.
+
+
+Este árbol es conceptual y sólo haremos uso de su organización como tal, en donde cada nodo de nivel $k$ representa una parte de la solución y está formado por $k$ etapas que se suponen ya realizadas.
+
+Sus hijos son las prolongaciones posibles al añadir una nueva etapa.
+
+En este recorrido pueden sucede dos cosas:
+- La primera es que tenga éxito si, procediendo de esta manera, se llega a una solución (hoja del árbol).
+
+Si lo único que buscábamos era una solución al problema, el algoritmo termina aquí.
+
+Si lo que buscábamos eran todas las soluciones o la mejor de entre todas ellas, el algoritmo seguirá explorando el árbol en la búsqueda de soluciones alternativas.
+
+- La segunda, es que el algoritmo no tenga éxito si en alguna etapa la solución parcial construida hasta el momento no se puede completar; nos encontramos en lo que llamamos _nodos fracaso_.
+
+En primer lugar debemos fijar la descomposición en etapas que vamos a realizar y definir, dependiendo del problema, la n-tupla que representa la solución del problema  y el significado de sus componentes $x_i$.
+
+Una vez que veamos las posibles opciones de cada etapa quedará definida la estructura del árbol a recorrer.
+
+- **Restricciones explícitas**: Formadas por reglas que restringen los valores que pueden tomar los elementos $x_i$ a un conjunto determinado.
+
+- **Restricciones implícitas**: Indican la relación existente entre los posibles valores de los $x_i$ para que éstos puedan formar parte de una n-tupla solución.
+
+
+De esta manera, y aplicando las restricciones en cada etapa $k$ iremos generando sólo las $k$ -tuplas con posibilidad de solución.
+
+A los prefijos de longitud $k$ de la n-tupla solución que vamos construyendo y que verifiquen las restricciones expuestas los denominaremos k-prometedores, pues a priori pueden llevarnos a la solución basada.
+
+Cada nodo es o bien un _nodo fracaso_, o bien un _k-prometedor_.
+
+``` Pseudocode
+PROCEDURE VueltaAtras(etapa)
+BEGIN
+  IniciarOpciones;
+  REPEAT
+    SeleccionarNuevaOpcion;
+    IF Aceptable THEN
+      AnotarOpcion;
+      IF SolucionIncompleta THEN
+        VueltaAtras(etapa_siguiente);
+      IF NOT exito THEN
+	CancelarAnotacion
+      END
+      ELSE (* solucion completa *)
+	exito := TRUE
+      END
+    END
+  UNTIL(exito) OR (UltimaOpcion)
+END VueltaAtras;
+```
+
