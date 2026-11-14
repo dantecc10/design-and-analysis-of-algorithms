@@ -402,3 +402,41 @@ BEGIN
 END VueltaAtras;
 ```
 
+## Ramificación y poda
+- Esta técnica de diseño se aplica normalmente para resolver problemas de optimización.
+- Ramificación y Poda, al igual que el diseño Vuelta Atrás realiza una enumeración parcial del espacio de soluciones basándose en la generación de un árbol de expansión.
+
+Una característica que lo hace diferente al diseño anterior es la posibilidad de generar nodos siguiendo distintas estrategias.
+
+El diseño Ramificación y Poda en su versión más sencilla puede seguir:
+- Un recorrido en anchura (estrategia LIFO).
+- Un recorrido en profundidad (estrategia FIFO).
+- O utilizando el cálculo de funciones de coste para seleccionar el nodo que en un principio parece más prometedor (estrategia de mínimo coste o LC).
+
+- Utiliza también cotas para podar aquellas ramas del árbol que no conducen a la solución óptima.
+- Calcula en cada nodo una cota del posible balor de aquellas soluciones alcanzables de ese.
+- Si la cota muestra que cualquiera de estas soluciones tiene que ser necesariamente peor que la mejor solución hallada hasya el momento no necesitamos seguir explorando por esa rama del árbol.
+
+- Un **nodo vivo** del árbol es un nodo con posibilidades de ser ramificado, es decir, que no ha sido podado. Para determinar en cada momento qué nodo va a ser expandido y dependiendo de la estrategia de búsqueda seleccionada, necesitaremos almacenar todos los nodos vivos en alguna estructura que podamos recorrer.
+
+En un algoritmo de ramificación y poda se realizan tres etapas:
+- La primera de ellas se denomina _de Selección_, y se encarga de extraer un nodo de entre el conjunto de los nodos vivos.
+- La forma de escogerlo va a depender directamente de la estrategia de bśuqeuda que decidamos para el algoritmo.
+
+- En la segunda etapa, _ramificación_, se construyen los posibles nodos hijos del nodo seleccionado en el paso anterior.
+
+- Por último, en la tercera etapa (_poda_), se eliminan algunos de los nodos creados en la etapa anterior.
+
+Todos los nodos que no fueron podados pasan a ser parte de los nodos vivos, y se comienza de nuevo por el proceso de selección.
+
+El algoritmo finaliza cuando encuentra la solución, o bien cuando se agota el conjunto de nodos vivos.
+
+Inicialmente, y antes de proceder a la poda de nodos, tendremos que disponer del coste de la mejor solución encontrada hasta el momento que permite excluir de futuras expansiones cualquier solución parcial con un coste mayor.
+
+Muchas veces no se desea esperar a encontrar la primera solución para empezar a podar; un buen recurso para los problemas de optimización es tomar como mejor solución inicial la obtenida con un algoritmo ávido.
+
+Una ventaja adicional que poseen estos algoritmos es la posibilidad de ejecutarlos en paralelo.
+
+El disponer de algoritmos paralelizables (y estos algoritmos, así como los de _divide y vencerás_ lo son) es muy importante en muchas aplicaciones en las que es necesario abordar los problemas de forma paralela para resolverlos en tiempos razonables, debido a su complejidad intrínseca.
+
+
